@@ -170,7 +170,7 @@ telegram_bot:
 notify:
   - name: POliveira_bot
     platform: telegram
-    chat_id: 505307658
+    chat_id: *********
 
 #Configurar MQTT  
 # mqtt:
