@@ -1,0 +1,66 @@
+homeassistant:
+
+###############################################################################
+#                                                                             #
+#                           G R O U P                                         #
+#                                                                             #
+###############################################################################
+group:
+  Kids_room:
+    name: Quarto das Crinaças
+    entities:
+      - sensor.temperature_158d00011739b9
+      - sensor.humidity_158d0001585314
+      - binary_sensor.switch_158d0001e73845
+      - light.quarto_crianca
+      - light.lampada_wc
+      - light.lampada_entrada
+      
+
+###############################################################################
+#                                                                             #
+#                           A U T O M A T I O N                               #
+#                                                                             #
+###############################################################################
+
+automation:
+
+    - alias: BotãoKIDS Liga a luz do Quarto KIDS
+      trigger:
+        platform: event
+        event_type: click
+        event_data:
+          entity_id: binary_sensor.switch_158d0001e73845
+          click_type: single
+      action:
+        - service: light.toggle
+          data:
+            entity_id: light.quarto_crianca
+            # brightness: 255
+            # kelvin: 2700
+        
+    ############################################################    
+            #Botão KIDS  -  Liga as luzes do corredor
+    ############################################################  
+
+    - alias: BotãoKIDS Liga a luz do corredor WC
+      trigger:
+        platform: event
+        event_type: click
+        event_data:
+          entity_id: binary_sensor.switch_158d0001e73845
+          click_type: double
+      action:
+        service: light.toggle
+        entity_id: light.lampada_wc
+        
+    - alias: BotãoKIDS Liga a luz do corredor ENT
+      trigger:
+        platform: event
+        event_type: click
+        event_data:
+          entity_id: binary_sensor.switch_158d0001e73845
+          click_type: double
+      action:
+        service: light.toggle
+        entity_id: light.lampada_entrada

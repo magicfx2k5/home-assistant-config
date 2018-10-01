@@ -1,0 +1,224 @@
+﻿#--------------------------------------------------------------------
+#	Home Assistant - Batteries
+#--------------------------------------------------------------------
+#	Author		:	Flávio Pinho
+#	Date		:	2018-02-07
+#	Description :	Set configuration to Batteries
+#--------------------------------------------------------------------
+
+homeassistant:
+  customize:
+    input_boolean.battery_notifications:
+      custom_ui_state_card: state-card-custom-ui
+      show_last_changed: true
+
+group:
+  Batteries Status:
+    name: Estado das Baterias
+    control: hidden
+    entities:
+      - sensor.door_sensor_0
+      - sensor.door_sensor_1
+      - sensor.door_sensor_2
+      - sensor.temperature_sensor
+      - sensor.temperature_sensor_1
+      - sensor.temperature_sensor_2
+      # - sensor.Botao1_sensor
+      # - sensor.Botao2_sensor
+      - input_boolean.battery_notifications
+
+sensor:
+  platform: template
+  sensors:
+    door_sensor_0:
+      friendly_name: Bateria sensor Quarto
+      unit_of_measurement: '%'
+      value_template: >-
+        {%- if states.binary_sensor.door_window_sensor_158d0001a65d1a.attributes.battery_level %}
+          {{ states.binary_sensor.door_window_sensor_158d0001a65d1a.attributes.battery_level|round }}
+        {% else %}
+          {{ states.sensor.door_sensor_0.state }}
+        {%- endif %}
+      icon_template: >
+        {% set battery_level = states.sensor.door_sensor_0.state|default(0)|int %}
+        {% set battery_round = (battery_level / 10) |int * 10 %}
+        {% if battery_round >= 100 %}
+          mdi:battery
+        {% elif battery_round > 0 %}
+          mdi:battery-{{ battery_round }}
+        {% else %}
+          mdi:battery-alert
+        {% endif %}
+        
+    door_sensor_1:
+      friendly_name: Bateria sensor Sala
+      unit_of_measurement: '%'
+      value_template: >-
+        {%- if states.binary_sensor.door_window_sensor_158d00016d1b43.attributes.battery_level %}
+          {{ states.binary_sensor.door_window_sensor_158d00016d1b43.attributes.battery_level|round }}
+        {% else %}
+          {{ states.sensor.door_sensor_1.state }}
+        {%- endif %}
+      icon_template: >
+        {% set battery_level = states.sensor.door_sensor_1.state|default(0)|int %}
+        {% set battery_round = (battery_level / 10) |int * 10 %}
+        {% if battery_round >= 100 %}
+          mdi:battery
+        {% elif battery_round > 0 %}
+          mdi:battery-{{ battery_round }}
+        {% else %}
+          mdi:battery-alert
+        {% endif %}
+
+    door_sensor_2:
+      friendly_name: Bateria sensor Porta Entrada
+      unit_of_measurement: '%'
+      value_template: >-
+        {%- if states.binary_sensor.door_window_sensor_158d0001a65d1a.attributes.battery_level %}
+          {{ states.binary_sensor.door_window_sensor_158d0001a65d1a.attributes.battery_level|round }}
+        {% else %}
+          {{ states.sensor.door_sensor_2.state }}
+        {%- endif %}
+      icon_template: >
+        {% set battery_level = states.sensor.door_sensor_2.state|default(0)|int %}
+        {% set battery_round = (battery_level / 10) |int * 10 %}
+        {% if battery_round >= 100 %}
+          mdi:battery
+        {% elif battery_round > 0 %}
+          mdi:battery-{{ battery_round }}
+        {% else %}
+          mdi:battery-alert
+        {% endif %}
+        
+    temperature_sensor:
+      friendly_name: Bateria sensor temp. Quarto Principal
+      unit_of_measurement: '%'
+      value_template: >-
+        {%- if states.sensor.temperature_158d00011739b9.attributes.battery_level %}
+          {{ states.sensor.temperature_158d00011739b9.attributes.battery_level|round }}
+        {% else %}
+          {{ states.sensor.temperature_sensor.state }}
+        {%- endif %}
+      icon_template: >
+        {% set battery_level = states.sensor.temperature_sensor.state|default(0)|int %}
+        {% set battery_round = (battery_level / 10) |int * 10 %}
+        {% if battery_round >= 100 %}
+          mdi:battery
+        {% elif battery_round > 0 %}
+          mdi:battery-{{ battery_round }}
+        {% else %}
+          mdi:battery-alert
+        {% endif %}
+        
+    temperature_sensor_1:
+      friendly_name: Bateria sensor temp. Quarto Criancas
+      unit_of_measurement: '%'
+      value_template: >-
+        {%- if states.sensor.temperature_158d0001585314.attributes.battery_level %}
+          {{ states.sensor.temperature_158d0001585314.attributes.battery_level|round }}
+        {% else %}
+          {{ states.sensor.temperature_sensor_1.state }}
+        {%- endif %}
+      icon_template: >
+        {% set battery_level = states.sensor.temperature_sensor_1.state|default(0)|int %}
+        {% set battery_round = (battery_level / 10) |int * 10 %}
+        {% if battery_round >= 100 %}
+          mdi:battery
+        {% elif battery_round > 0 %}
+          mdi:battery-{{ battery_round }}
+        {% else %}
+          mdi:battery-alert
+        {% endif %}
+        
+    temperature_sensor_2:
+      friendly_name: Bateria sensor temp. Sala
+      unit_of_measurement: '%'
+      value_template: >-
+        {%- if states.sensor.temperature_158d0001ab26e2.attributes.battery_level %}
+          {{ states.sensor.temperature_158d0001ab26e2.attributes.battery_level|round }}
+        {% else %}
+          {{ states.sensor.temperature_sensor_2.state }}
+        {%- endif %}
+      icon_template: >
+        {% set battery_level = states.sensor.temperature_sensor_2.state|default(0)|int %}
+        {% set battery_round = (battery_level / 10) |int * 10 %}
+        {% if battery_round >= 100 %}
+          mdi:battery
+        {% elif battery_round > 0 %}
+          mdi:battery-{{ battery_round }}
+        {% else %}
+          mdi:battery-alert
+        {% endif %}
+
+
+
+    # Botao1_sensor:
+      # friendly_name: Bateria Botao Quarto
+      # unit_of_measurement: '%'
+      # value_template: >-
+        # {%- if states.binary_sensor.switch_158d0001a6745d.attributes.battery_level %}
+          # {{ states.binary_sensor.switch_158d0001a6745d.attributes.battery_level|round }}
+        # {% else %}
+          # {{ states.sensor.Botao1_sensor.state }}
+        # {%- endif %}
+      # icon_template: >
+        # {% set battery_level = states.sensor.Botao1_sensor.state|default(0)|int %}
+        # {% set battery_round = (battery_level / 10) |int * 10 %}
+        # {% if battery_round >= 100 %}
+          # mdi:battery
+        # {% elif battery_round > 0 %}
+          # mdi:battery-{{ battery_round }}
+        # {% else %}
+          # mdi:battery-alert
+        # {% endif %}
+        
+    # Botao2_sensor:
+      # friendly_name: Bateria Botao Cozinha
+      # unit_of_measurement: '%'
+      # value_template: >-
+        # {%- if states.sensor.switch_158d0001a6745d.attributes.battery_level %}
+          # {{ states.sensor.switch_158d0001a6745d.attributes.battery_level|round }}
+        # {% else %}
+          # {{ states.sensor.Botao2_sensor.state }}
+        # {%- endif %}
+      # icon_template: >
+        # {% set battery_level = states.sensor.Botao2_sensor.state|default(0)|int %}
+        # {% set battery_round = (battery_level / 10) |int * 10 %}
+        # {% if battery_round >= 100 %}
+          # mdi:battery
+        # {% elif battery_round > 0 %}
+          # mdi:battery-{{ battery_round }}
+        # {% else %}
+          # mdi:battery-alert
+        # {% endif %}
+        
+    
+input_boolean:
+  battery_notifications:
+    name: Notificações da bateria
+    initial: on
+    icon: mdi:battery-charging-wireless
+
+automation:
+  - alias: Alerta Para Substituir a Bateria dos Sensores
+    initial_state: true
+    trigger:
+      platform: numeric_state
+      entity_id:
+        - sensor.door_sensor_0
+        - sensor.door_sensor_1
+        - sensor.door_sensor_2
+        - sensor.temperature_sensor
+        - sensor.temperature_sensor_1
+        - sensor.temperature_sensor_2
+        - sensor.Botao1_sensor
+        - sensor.Botao1_sensor_1
+        - sensor.Botao1_sensor_2
+      below: 15
+    condition:
+      - condition: template
+        value_template: '{{ states.input_boolean.battery_notifications.state == "on" }}'
+    action:
+      - service: notify.poliveira_bot
+        data_template:
+          message: 'Alerta! {{ trigger.from_state.attributes.friendly_name }} necessita de ser substituída, apenas tem {{ trigger.from_state.state }}% de bateria restante!!'

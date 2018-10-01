@@ -1,0 +1,27 @@
+﻿#--------------------------------------------------------------------
+#	Home Assistant - Datetime
+#--------------------------------------------------------------------
+#	Author		:	Flávio Pinho
+#	Date		:	2018-01-17
+#	Description :	Set configuration to Datetime
+#--------------------------------------------------------------------
+
+homeassistant:
+  customize:
+    sensor.date:
+      friendly_name: Data
+    sensor.time:
+      friendly_name: Hora
+
+group:
+  Datetime:
+    name: Data e Hora
+    entities:
+      - sensor.date
+      - sensor.time
+
+sensor:
+  - platform: time_date
+    display_options:
+      - 'time'
+      - 'date'
