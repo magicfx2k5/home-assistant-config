@@ -1,0 +1,343 @@
+# #Avisa ao abrir a porta de entrada
+# - id: '1528745556267'
+  # alias: Porta da Entrada
+  # trigger:
+  # - entity_id: binary_sensor.door_window_sensor_158d0001a65d1a
+    # from: 'off'
+    # platform: state
+    # to: 'on'
+  # action:
+    # service: xiaomi_aqara.play_ringtone
+    # data:
+      # gw_mac: f0:b4:29:cc:1d:83
+      # ringtone_id: 8
+      # ringtone_vol: 8
+      
+#Botão Liga A luz Da Cozinha
+- id: '152874555629'
+  alias: Botao Luz Cozinha
+  trigger:
+  - event_data:
+      click_type: single
+      entity_id: binary_sensor.switch_158d0001a6745d
+    event_type: click
+    platform: event
+  action:
+  - entity_id: light.cozinha
+    service: light.toggle
+
+#Botão Liga A luz o quarto_crianca
+- id: '152874555629'
+  alias: Botao Luz Corredor WC
+  trigger:
+  - event_data:
+      click_type: single
+      entity_id: binary_sensor.switch_158d000123ddcb
+    event_type: click
+    platform: event
+  action:
+  - entity_id: light.lampada_wc
+    service: light.toggle
+    
+    
+#Dentro de um periodo se ligar a luz da cozinha fica com 10 Luminosidade
+- id: '152874555610'
+  alias: Luminosidade Luz Cozinha 10%
+  trigger:
+  - entity_id: light.cozinha
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition:
+  - after: '22:00:00'
+    before: '07:00:00'
+    condition: time
+  action:
+  - data:
+      brightness: 10
+      entity_id: light.cozinha
+    service: light.turn_on
+ 
+#Dentro de um periodo se ligar a luz do corredor fica com 10 Luminosidade
+- id: '152874555610'
+  alias: Luminosidade Luz WC 10%
+  trigger:
+  - entity_id: light.lampada_wc
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition:
+  - after: '22:00:00'
+    before: '07:00:00'
+    condition: time
+  action:
+  - data:
+      brightness: 1
+      entity_id: light.lampada_wc
+    service: light.turn_on
+ 
+ #Dentro de um periodo se ligar a luz da sala fica com 1% Luminosidade
+- id: '152874555625'
+  alias: Luminosidade Luz Sala 1%
+  trigger:
+  - entity_id: light.lampada_sala
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition:
+  - after: '22:00:00'
+    before: '07:00:00'
+    condition: time
+  action:
+  - data:
+      brightness: 10
+      entity_id: light.lampada_sala
+    service: light.turn_on
+ 
+  # #Dentro de um periodo se ligar a luz da quarto_crianca fica com 1% Luminosidade
+# - id: '152874555695'
+  # alias: Luminosidade Luz Quarto kids 1%
+  # trigger:
+  # - entity_id: light.quarto_crianca
+    # from: 'off'
+    # platform: state
+    # to: 'on'
+  # condition:
+  # - after: '22:00:00'
+    # before: '07:00:00'
+    # condition: time
+  # action:
+  # - data:
+      # brightness: 10
+      # entity_id: light.quarto_crianca
+    # service: light.turn_on
+ 
+#Dentro de um periodo se ligar a luz da cozinha fica com 155 Luminosidade
+- id: '152874555611'
+  alias: Luminosidade Luz Cozinha 100
+  trigger:
+  - entity_id: light.cozinha
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition:
+  - after: '08:00:00'
+    before: '22:00:00'
+    condition: time
+  action:
+  - data:
+      brightness: 100
+      entity_id: light.cozinha
+    service: light.turn_on
+
+# #Dentro de um periodo se ligar a luz do quarto fica com 155 Luminosidade
+# - id: '152874555611'
+  # alias: Luminosidade Luz Quarto 155
+  # trigger:
+  # - entity_id: light.quarto_crianca
+    # from: 'off'
+    # platform: state
+    # to: 'on'
+  # condition:
+  # - after: '08:00:00'
+    # before: '22:00:00'
+    # condition: time
+  # action:
+  # - data:
+      # brightness: 50
+      # hs_color: 360
+      # entity_id: light.quarto_crianca
+    # service: light.turn_on
+    
+# #Dentro de um periodo se ligar a luz do quario da criancaem modo moonlight
+# - id: '152874555611'
+  # alias: Modo Moonlight Quarto Crianca
+  # trigger:
+  # - entity_id: binary_sensor.switch_158d0001a6745d
+    # from: 'off'
+    # platform: state
+    # to: 'on'
+  # condition:
+  # - after: '07:00:00'
+    # before: '23:00:00'
+    # condition: time
+  # action:
+  # - data:
+      # brightness: 155
+      # entity_id: light.quarto_crianca
+    # service: light.turn_on
+    
+# #Notifica para o telegram    
+# - id: '1529203213762'
+  # alias: Notifica Luz Cozinha
+  # trigger:
+  # - entity_id: light.cozinha
+    # from: 'off'
+    # platform: state
+    # to: 'on'
+  # action:
+    # - service: notify.poliveira_bot
+      # data:
+        # message: 'Iluminação da Cozinha Ligada'
+        
+- id: '1529203213762'
+  alias: Notifica Porta Entrada
+  trigger:
+  - entity_id: binary_sensor.door_window_sensor_158d0001a65d1a
+    from: 'off'
+    platform: state
+    to: 'on'
+  action:
+    - service: notify.poliveira_bot
+      data:
+        message: 'Porta Entrada Aberta'   
+
+- alias: Notifica Porta Fechada
+  trigger:
+  - entity_id: binary_sensor.door_window_sensor_158d0001a65d1a
+    from: 'on'
+    platform: state
+    to: 'off'
+  action:
+    - service: notify.poliveira_bot
+      data:
+        message: 'Porta Entrada Fechada'           
+
+        ##############ALARME#################################################
+- id: alarm_armed_away
+  alias: '[Alarm] Away Mode Armed'
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.house
+    to: 'armed_away'
+  action:
+   - service: notify.poliveira_bot
+     data:
+       message: 'Alarm Away Mode Armed'   
+       
+- id: alarm_armed_home
+  alias: '[Alarm] Home Mode Armed'
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.house
+    to: 'armed_home'
+  action:
+  - data:
+      message: 'Alarm Home Mode Armed'
+    service: notify.poliveira_bot
+
+- id: alarm_arming_away
+  alias: '[Alarm] Away Mode Arming'
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.house
+    to: 'pending'
+  action:
+  - data:
+      message: 'House alarm activating, ensure all doors and windows are closed'
+    service: notify.poliveira_bot
+
+- id: alarm_warning
+  alias: '[Alarm] Warning'
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.house
+    to: 'warning'
+  action:
+  - service: notify.poliveira_bot
+    data:
+      message: 'ALARM Warning {{ states[states.alarm_control_panel.house.attributes.changed_by.split(".")[0]][ states.alarm_control_panel.house.attributes.changed_by.split(".")[1]].name }}'
+      
+ #### ALARM TRIGGERED
+- id: alarm_triggered
+  alias: '[Alarm] Triggered'
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.house
+    to: 'triggered'
+  action:
+  - delay: '00:00:10'
+  - service: xiaomi_aqara.play_ringtone
+    data:
+      gw_mac: f0:b4:29:cc:1d:83
+      ringtone_id: 0
+      ringtone_vol: 100
+  - service: notify.poliveira_bot
+    data:
+      message: 'ALARME ACIONADO!!! {{ states[states.alarm_control_panel.house.attributes.changed_by.split(".")[0]][ states.alarm_control_panel.house.attributes.changed_by.split(".")[1]].name }}'
+  
+  
+  
+  
+  ########################################################################################################################################
+  #                                                 B O T A O - C O R R E D O R                                                          #
+  ########################################################################################################################################
+
+                                                #Botão HALL -  Liga as luzes do corredor
+  
+- alias: BotaoHALL Liga a luz do corredor ENT
+  trigger:
+    platform: event
+    event_type: click
+    event_data:
+      entity_id: binary_sensor.switch_158d0001f35ce4
+      click_type: single
+  action:
+    service: light.toggle
+    entity_id: light.lampada_entrada
+    
+############################################################    
+- alias: BotaoHALL Liga a luz do corredor WC
+  trigger:
+    platform: event
+    event_type: click
+    event_data:
+      entity_id: binary_sensor.switch_158d0001f35ce4
+      click_type: single
+  action:
+    service: light.toggle
+    entity_id: light.lampada_wc
+
+########################################################################################################################################
+#                                                # #Botão KIDS - Liga a luz do Quarto Kids                                             #
+########################################################################################################################################
+    
+# - alias: BotãoKIDS Liga a luz do Quarto KIDS
+  # trigger:
+    # platform: event
+    # event_type: click
+    # event_data:
+      # entity_id: binary_sensor.switch_158d0001e73845
+      # click_type: single
+  # action:
+    # - service: light.toggle
+      # data:
+        # entity_id: light.quarto_crianca
+        # # brightness: 255
+        # # kelvin: 2700
+    
+# ############################################################    
+
+                                               # #Botão KIDS  -  Liga as luzes do corredor
+
+# - alias: BotãoKIDS Liga a luz do corredor WC
+  # trigger:
+    # platform: event
+    # event_type: click
+    # event_data:
+      # entity_id: binary_sensor.switch_158d0001e73845
+      # click_type: double
+  # action:
+    # service: light.toggle
+    # entity_id: light.lampada_wc
+    
+# - alias: BotãoKIDS Liga a luz do corredor ENT
+  # trigger:
+    # platform: event
+    # event_type: click
+    # event_data:
+      # entity_id: binary_sensor.switch_158d0001e73845
+      # click_type: double
+  # action:
+    # service: light.toggle
+    # entity_id: light.lampada_entrada
