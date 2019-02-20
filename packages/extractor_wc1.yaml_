@@ -1,0 +1,59 @@
+################################################################################
+# TYPE: Automation
+# FILENAME: automation_plug_158d0001dad4ed.yaml
+# NAME: Extractor WC1
+################################################################################
+
+#### LIGA EXTRACTOR
+- alias: 'Liga Extractor do WC1'
+  initial_state: True
+  trigger:
+    - platform: time_pattern
+      minutes: '/1'
+      seconds: 01
+  condition:
+    condition: and
+    conditions:
+      - condition: template
+        value_template: '{{ (states.sensor.humidity_158d00011739b9 | int) >= (states.input_number.start_hum_vent_wc1.state | int) }}'
+      - condition: state
+        entity_id: input_boolean.extractor_auto
+        state: 'on'
+      - condition: state
+        entity_id: input_boolean.modo_ferias
+        state: 'off'
+  action:
+    - service: switch.turn_on
+      entity_id: switch.plug_158d0001dad4ed
+    # - service: script.notify_save_to_file
+      # data:
+        # message: '{{ as_timestamp (now()) | timestamp_custom("%d/%b/%Y %T") }} - Extractor do WC1 - LIGADO'
+
+#### DESLIGA EXTRACTOR
+- alias: 'Desliga Extractor do WC1'
+  initial_state: True
+  trigger:
+    - platform: time_pattern
+      minutes: '/1'
+      seconds: 01
+  condition:
+    condition: and
+    conditions:
+      - condition: template
+        value_template: '{{ (states.sensor.humidity_158d00011739b9 | int) <= (states.input_number.stop_hum_vent_wc1.state | int) }}'
+      - condition: state
+        entity_id: input_boolean.extractor_auto
+        state: 'on'
+      - condition: state
+        entity_id: input_boolean.modo_ferias
+        state: 'off'
+  action:
+    - service: switch.turn_off
+      entity_id: switch.plug_158d0001dad4ed
+    # - service: script.notify_save_to_file
+      # data:
+        # message: '{{ as_timestamp (now()) | timestamp_custom("%d/%b/%Y %T") }} - Extractor do WC1 - DESLIGADO'
+
+
+####  ####  ####  ####
+

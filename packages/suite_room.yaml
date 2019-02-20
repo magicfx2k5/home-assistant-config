@@ -1,0 +1,34 @@
+###############################################################################
+#                                                                             #
+#                           G R O U P                                         #
+#                                                                             #
+###############################################################################
+group:
+  my_room_principal:
+    name: Quarto Suite
+    entities:
+      - sensor.temperature_158d0001585314
+      - sensor.humidity_158d0001585314
+      - sensor.temperature_sensor
+      - binary_sensor.door_window_sensor_158d0001dbd295
+      
+
+###############################################################################
+#                                                                             #
+#                           A U T O M A T I O N                               #
+#                                                                             #
+###############################################################################
+
+automation:
+
+#Botão Liga A luz o quarto_crianca
+- alias: BotaoSuite liga  Luz Corredor WC
+  trigger:
+  - event_data:
+      click_type: single
+      entity_id: binary_sensor.switch_158d000123ddcb
+    event_type: xiaomi_aqara.click
+    platform: event
+  action:
+  - entity_id: light.lampada_wc
+    service: light.toggle

@@ -1,0 +1,79 @@
+###############################################################################
+#                                                                             #
+#                           G R O U P                                         #
+#                                                                             #
+###############################################################################
+group:
+  my_sala:
+    name: Sala
+    entities:
+      - sensor.temperature_158d0001ab26e2
+      - sensor.humidity_158d0001ab26e2
+      - sensor.pressure_158d0001ab26e2
+      - sensor.temperature_sensor_2
+      - binary_sensor.door_window_sensor_158d00016d1b43
+      - light.lampada_sala
+      #- switch.plug_158d0001dad4ed
+      - cover.persiana_sala
+      
+
+###############################################################################
+#                                                                             #
+#                           A U T O M A T I O N                               #
+#                                                                             #
+###############################################################################
+
+automation:
+#Dentro de um periodo se ligar a luz da Sala fica com 10 Luminosidade
+- alias: Luminosidade Luz Sala 3
+  trigger:
+  - entity_id: light.lampada_sala
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition:
+  - after: '21:00:00'
+    before: '07:00:00'
+    condition: time
+  action:
+  - data:
+      brightness: 3
+      entity_id: light.lampada_sala
+    service: light.turn_on
+
+#Dentro de um periodo se ligar a luz da sala fica com  Luminosidade 200
+- alias: Luminosidade Luz Sala 200
+  trigger:
+  - entity_id: light.lampada_sala
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition:
+  - after: '07:00:00'
+    before: '21:00:00'
+    condition: time
+  action:
+  - data:
+      brightness: 200
+      entity_id: light.lampada_sala
+    service: light.turn_on
+
+#Fecha Estore Sala às 22:30
+- alias: Fecha_estore_sala
+  trigger:
+    platform: time
+    at: '22:30:00'
+  action:
+    service: script.persiana_sala_fechar
+    
+#Abre estore 5s sala
+- alias: Abre_estore_sala
+  trigger:
+    platform: time
+    at: '07:45:00'
+  action:
+  - service: script.persiana_sala_abrir
+  - delay:
+      seconds: 5
+  - service: script.persiana_sala_parar
+ 

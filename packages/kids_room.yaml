@@ -1,5 +1,3 @@
-homeassistant:
-
 ###############################################################################
 #                                                                             #
 #                           G R O U P                                         #
@@ -7,14 +5,18 @@ homeassistant:
 ###############################################################################
 group:
   Kids_room:
-    name: Quarto das Crinaças
+    name: Quarto das Crianças
     entities:
       - sensor.temperature_158d00011739b9
-      - sensor.humidity_158d0001585314
-      - binary_sensor.switch_158d0001e73845
+      - sensor.humidity_158d00011739b9
+      - sensor.temperature_sensor_1
+      - binary_sensor.motion_sensor_158d000272bd55
+      - sensor.illumination_158d000272bd55
+      - switch.plug_158d0001dc9be5
+      - switch.plug_158d0001dad4ed
       - light.quarto_crianca
-      - light.lampada_wc
-      - light.lampada_entrada
+      - cover.persiana_quarto_crianca
+      
       
 
 ###############################################################################
@@ -24,43 +26,176 @@ group:
 ###############################################################################
 
 automation:
+- alias: BotãoKIDS Liga a luz do Quarto KIDS
+  trigger:
+    platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.switch_158d0001e73845
+      click_type: single
+  action:
+    service: light.toggle
+    entity_id: light.quarto_crianca
+  
+    
+############################################################    
+        #Botão KIDS  -  Liga as luzes do corredor
+############################################################  
 
-    - alias: BotãoKIDS Liga a luz do Quarto KIDS
-      trigger:
-        platform: event
-        event_type: click
-        event_data:
-          entity_id: binary_sensor.switch_158d0001e73845
-          click_type: single
-      action:
-        - service: light.toggle
-          data:
-            entity_id: light.quarto_crianca
-            # brightness: 255
-            # kelvin: 2700
-        
-    ############################################################    
-            #Botão KIDS  -  Liga as luzes do corredor
-    ############################################################  
+- alias: BotãoKIDS Liga a luz do corredor WC
+  trigger:
+    platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.switch_158d0001e73845
+      click_type: double
+  action:
+    service: light.toggle
+    entity_id: light.lampada_wc
+    
+#Dentro de um periodo se ligar a luz do Quarto fica com 8 de brilho
 
-    - alias: BotãoKIDS Liga a luz do corredor WC
-      trigger:
-        platform: event
-        event_type: click
-        event_data:
-          entity_id: binary_sensor.switch_158d0001e73845
-          click_type: double
-      action:
-        service: light.toggle
-        entity_id: light.lampada_wc
-        
-    - alias: BotãoKIDS Liga a luz do corredor ENT
-      trigger:
-        platform: event
-        event_type: click
-        event_data:
-          entity_id: binary_sensor.switch_158d0001e73845
-          click_type: double
-      action:
-        service: light.toggle
-        entity_id: light.lampada_entrada
+- alias: Luminosidade Luz WC 8%
+  trigger:
+  - entity_id: light.quarto_crianca
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition:
+    condition: time
+    after: '21:00:00'
+    before: '08:00:00'
+  action:
+  - data:
+      brightness: 8
+      entity_id: light.quarto_crianca
+    service: light.turn_on
+
+#Dentro de um periodo se ligar a luz do Quarto fica com 50 de brilho
+- alias: Luminosidade Luz WC 80%
+  trigger:
+  - entity_id: light.quarto_crianca
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition:
+    condition: time
+    after: '08:00:00'
+    before: '21:00:00'
+  action:
+  - data:
+      brightness: 50
+      entity_id: light.quarto_crianca
+    service: light.turn_on
+    
+# #Notifica a Temperatura acima de 22º e abaixo dos 19º
+# - alias: Notifica Temperatura
+  # initial_state: true
+  # trigger:
+    # platform: numeric_state
+    # entity_id: sensor.temperature_158d00011739b9
+    # above: 22
+    # below: 19
+  # action:
+    # - service: notify.poliveira_bot
+      # data:
+        # message: 'Alerta!! Temperatura Quarto Crianças{{ states.sensor.temperature_158d00011739b9.state }}º'
+      
+############################################################    
+        #Sensor de Movimento
+############################################################  
+      
+- alias: If there is motion and its dark turn on the light
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_158d000272bd55
+    from: 'off'
+    to: 'on'
+  condition:
+    condition: numeric_state
+    entity_id: sensor.illumination_158d000272bd55
+    below: 300
+  action:
+    - service: light.turn_on
+      entity_id: light.lampada_wc
+      data:
+        brightness: 5
+    - service: automation.turn_on
+      data:
+        entity_id: automation.Motion_off
+
+- alias: If there no motion for 5 minutes turn off the gateway light
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_158d000272bd55
+    from: 'on'
+    to: 'off'
+    for:
+      minutes: 5
+  action:
+  - service: light.turn_off
+    entity_id: light.lampada_wc
+  - service: automation.turn_off
+    data:
+      entity_id: automation.Motion_off
+  
+
+#Liga Luz do Quarto caso exista atividade durante um periodo
+- alias: Liga_Luz_Quarto
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_158d000272bd55
+    from: 'off'
+    to: 'on'
+  condition:
+    condition: and
+    conditions:
+      - condition: time
+        after: '08:00:00'
+        before: '21:00:00'
+      - condition: numeric_state
+        entity_id: sensor.illumination_158d000272bd55
+        below: 10
+  action:
+  - service: light.turn_on
+    entity_id: light.quarto_crianca
+    data:
+      brightness: 50
+  - service: automation.turn_on
+    data:
+      entity_id: automation.Motion_off
+
+#Desliga Luz Quarto não existindo atividade ao fim de 5 M
+- alias: Desliga_Luz_Quarto_inativade_5m
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_158d000272bd55
+    from: 'on'
+    to: 'off'
+    for:
+      minutes: 5
+  action:
+  - service: light.turn_off
+    entity_id: light.quarto_crianca
+  - service: automation.turn_off
+    data:
+      entity_id: automation.Motion_off
+      
+#Fecha Estore Quarto às 22:30
+- alias: Fecha_estore_quarto
+  trigger:
+    platform: time
+    at: '22:30:00'
+  action:
+    service: script.persiana_quartocrianca_fechar
+    
+#Abre estore 3s para acordar
+- alias: Abre_estore_quarto
+  trigger:
+    platform: time
+    at: '07:00:00'
+  action:
+  - service: script.persiana_quartocrianca_abrir
+  - delay:
+      seconds: 5
+  - service: script.persiana_quartocrianca_parar

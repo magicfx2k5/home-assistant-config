@@ -1,0 +1,76 @@
+###############################################################################
+#                                                                             #
+#                           G R O U P                                         #
+#                                                                             #
+###############################################################################
+group:
+  my_kitchen:
+    name: Cozinha
+    entities:
+      - light.cozinha   
+      #- sensor.plug_in_use
+
+###############################################################################
+#                                                                             #
+#                           A U T O M A T I O N                               #
+#                                                                             #
+###############################################################################
+
+automation:
+#Dentro de um periodo se ligar a luz da cozinha fica com 155 Luminosidade
+- alias: Luminosidade Luz Cozinha 100
+  trigger:
+  - entity_id: light.cozinha
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition:
+  - after: '08:00:00'
+    before: '22:00:00'
+    condition: time
+  action:
+  - data:
+      brightness: 100
+      entity_id: light.cozinha
+    service: light.turn_on
+    
+#Dentro de um periodo se ligar a luz da cozinha fica com 10 Luminosidade
+- alias: Luminosidade Luz Cozinha 10%
+  trigger:
+  - entity_id: light.cozinha
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition:
+  - after: '22:00:00'
+    before: '08:00:00'
+    condition: time
+  action:
+  - data:
+      brightness: 10
+      entity_id: light.cozinha
+    service: light.turn_on
+    
+#Botão Liga A luz Da Cozinha
+- alias: Botao Luz Cozinha
+  trigger:
+  - event_data:
+      click_type: single
+      entity_id: binary_sensor.switch_158d0001a6745d
+    event_type: xiaomi_aqara.click
+    platform: event
+  action:
+  - entity_id: light.cozinha
+    service: light.toggle
+
+#Duplo click liga a luz da Sala
+- alias: BotãoKitchnet Liga a luz da sala
+  trigger:
+    platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.switch_158d0001a6745d
+      click_type: double
+  action:
+    service: light.toggle
+    entity_id: light.lampada_sala

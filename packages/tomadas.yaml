@@ -1,0 +1,264 @@
+homeassistant:
+   
+###############################################################################
+#                                                                             #
+#                           A U T O M A T I O N                               #
+#                                                                             #
+###############################################################################
+
+automation:
+
+###############################################################################
+#                                                                             #
+#                   D E S U M I D I F I C A D O R                             #
+#                                                                             #
+###############################################################################
+
+###############################################################################
+#                                                                             #
+#                           Q U A R T O - K I D S                             #
+#                                                                             #
+###############################################################################
+
+#Liga Desumidificador se a Humidade for superior a 70%
+  - alias: Liga Desumidificador Humidade acima 70
+    trigger:
+      - platform: time_pattern
+        minutes: '/1'
+        seconds: 01
+    condition:
+      condition: and  
+      conditions:
+        - condition: template
+          value_template: >
+            {% if states('sensor.humidity_158d00011739b9') | int >= 65 %}
+            true
+            {% else %}
+            false
+            {% endif %}
+        - condition: time
+          after: '18:00'
+          before: '07:00'
+    action:
+      - service: switch.turn_on
+        entity_id: switch.plug_158d0001dad4ed
+      # - service: notify.poliveira_bot
+        # data_template:
+         # message: 'Estado Desumidificador {{ states.switch.plug_158d0001dad4ed.state }} Temperatura {{ states.sensor.humidity_158d00011739b9.state }}'
+ 
+#Desliga Desumidificador se a Humidade baixar de 70%
+  - alias: Desliga Desumidificador Humidade abaixo 70
+    trigger:
+      - platform: time_pattern
+        minutes: '/1'
+        seconds: 01
+    condition:
+      condition: template
+      value_template: >
+        {% if states('sensor.humidity_158d00011739b9') | int < 64 %}
+        true
+        {% else %}
+        false
+        {% endif %}
+    action:
+      - service: switch.turn_off
+        entity_id: switch.plug_158d0001dad4ed
+      # - service: notify.poliveira_bot
+        # data_template:
+          # message: 'Estado Desumidificador {{ states.switch.plug_158d0001dad4ed.state }} Temperatura {{ states.sensor.humidity_158d00011739b9.state }}'
+      
+###############################################################################
+#                                                                             #
+#                           Q U A R T O - S U I T E                           #
+#                                                                             #
+###############################################################################
+
+# #Liga Desumidificador se a Humidade acima de 70
+  # - alias: Liga_Desumidificador_Humidade_up_70_suite
+    # trigger:
+      # - platform: homeassistant
+        # event: start
+      # - platform: template
+        # value_template: >
+          # {% if states('sensor.humidity_158d0001585314') | int > 69 %}
+          # true
+          # {% else %}
+          # false
+          # {% endif %}
+    # condition:          
+      # condition: time
+      # after: '18:00'
+      # before: '07:00'
+    # action:
+      # service: switch.turn_on
+      # entity_id: switch.plug_158d0001dad4ed
+
+      
+# #{% if states.sensor.humidity_158d0001585314.state < "70" %}     
+# #Desliga Desumidificador se a Humidade abaixo de 70
+  # - alias: Desliga_Desumidificador_Humidade_down_70_suite
+    # trigger:
+      # - platform: homeassistant
+        # event: start
+      # - platform: template
+        # value_template: >
+          # {% if states('sensor.humidity_158d0001585314') | int < 70 %}
+           # true
+          # {% else %}
+           # false
+          # {% endif %}
+    # action:
+      # service: switch.turn_off
+      # entity_id: switch.plug_158d0001dad4ed
+      
+
+#Desliga Desumidificador
+  - alias: shutdown Desumidificador_7
+    trigger:
+      platform: time
+      at: '08:01:00'
+    action:
+      - service: switch.turn_off
+        entity_id: switch.plug_158d0001dad4ed    
+      - service: notify.poliveira_bot
+        data_template:
+         message: 'Estado Desumidificador {{ states.switch.plug_158d0001dad4ed.state }} Humidade {{ states.sensor.humidity_158d00011739b9.state }}'        
+         
+###############################################################################
+#                                                                             #
+#                              A Q U E C E D O R                              #
+#                                                                             #
+###############################################################################
+
+#Liga Aquecedor se a TEMP Inferior a 18
+  - alias: liga_aquecedor_temp_down
+    trigger:
+      - platform: time_pattern
+        minutes: '/1'
+        seconds: 01
+    condition:
+      condition: and  
+      conditions:
+        - condition: template
+          value_template: >
+            {% if states('sensor.temperature_158d00011739b9') | int <= 16 %}
+            true
+            {% else %}
+            false
+            {% endif %}
+        - condition: time
+          after: '20:30'
+          before: '07:00'
+    action:
+      - service: switch.turn_on
+        entity_id: switch.plug_158d0001dc9be5
+ 
+#Desliga Aquecedor se a TEMP superior a 17
+  - alias: desliga_Aquecedor_Temp_up
+    trigger:
+      - platform: time_pattern
+        minutes: '/1'
+        seconds: 01
+    condition:
+      condition: template
+      value_template: >
+        {% if states('sensor.temperature_158d00011739b9') | int > 17 %}
+        true
+        {% else %}
+        false
+        {% endif %}
+    action:
+      - service: switch.turn_off
+        entity_id: switch.plug_158d0001dc9be5
+      
+#Desliga Aquecedor
+  - alias: shutdown_aquecedor_7
+    trigger:
+      platform: time
+      at: '08:01:00'
+    action:
+      service: switch.turn_off
+      entity_id: switch.plug_158d0001dc9be5 
+      
+###############################################################################
+#                                                                             #
+#                            N O T I F I C C O E S                            #
+#                                                                             #
+###############################################################################      
+# #Notifica se o Aquecedor ligou
+  # - alias: notifica_aquecedor_ligado
+    # initial_state: true
+    # trigger:
+    # - entity_id: switch.plug_158d0001dc9be5
+      # from: 'off'
+      # platform: state
+      # to: 'on'
+    # action:
+     # - service: notify.poliveira_bot
+       # data_template:
+          # message: 'Estado Aquecedor {{ states.switch.plug_158d0001dc9be5.state }} Temperatura {{ states.sensor.temperature_158d00011739b9.state }}'
+          
+          
+# #Notifica se o Aquecedor Desligou
+  # - alias: notifica_aquecedor_desligado
+    # initial_state: true
+    # trigger:
+    # - entity_id: switch.plug_158d0001dc9be5
+      # from: 'on'
+      # platform: state
+      # to: 'off'
+    # action:
+     # - service: notify.poliveira_bot
+       # data_template:
+          # message: 'Estado Aquecedor {{ states.switch.plug_158d0001dc9be5.state }}'
+
+# #Notifica se o desumidificador Desligou
+  # - alias: notifica_desumidificador_desligado
+    # initial_state: true
+    # trigger:
+    # - entity_id: switch.plug_158d0001dad4ed
+      # from: 'on'
+      # platform: state
+      # to: 'off'
+    # action:
+     # - service: notify.poliveira_bot
+       # data_template:
+          # message: 'Estado Desumidificador {{ states.switch.plug_158d0001dad4ed.state }} Temperatura {{ states.sensor.humidity_158d00011739b9.state }}'
+
+#Notifica Temperatura Alta
+  - alias: notifica temperatura quarto kids
+    trigger:
+      - platform: time_pattern
+        minutes: '/59'
+        seconds: 01
+    condition:
+      -  condition: template
+         value_template: >
+           {% if states('sensor.temperature_158d00011739b9') | int >= 18 %}
+           true
+           {% else %}
+           false
+           {% endif %}
+    action:
+      - service: notify.poliveira_bot 
+        data_template:
+          message: 'Estado Aquecedor {{ states.switch.plug_158d0001dc9be5.state }} Temperatura {{ states.sensor.temperature_158d00011739b9.state }}'
+          
+#Liga Desumidificador se a Humidade for superior a 70%
+  - alias: notifica humidade quarto kids
+    trigger:
+      - platform: time_pattern
+        minutes: '/59'
+        seconds: 01
+    condition:
+      -  condition: template
+         value_template: >
+           {% if states('sensor.humidity_158d00011739b9') | int >= 60 %}
+           true
+           {% else %}
+           false
+           {% endif %}
+    action:
+      - service: notify.poliveira_bot 
+        data_template:
+         message: 'Estado Desumidificador {{ states.switch.plug_158d0001dad4ed.state }} Humidade {{ states.sensor.humidity_158d00011739b9.state }}'

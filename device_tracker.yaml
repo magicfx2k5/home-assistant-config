@@ -1,0 +1,32 @@
+- platform: mqtt_json
+  devices:
+   pedro: zanzito/pedro/location
+  track_new_devices: True
+  interval_seconds: 10
+  consider_home: 20
+  
+# - platform: mqtt_json
+  # devices:
+   # googlehome: zanzito/googlehome/location
+  # track_new_devices: True
+  # interval_seconds: 10
+  # consider_home: 20
+
+  
+# - platform: nmap_tracker
+  # home_interval: 3
+  # hosts: 
+    # - 192.168.1.72
+    # - 192.168.1.74
+    # - 192.168.1.68
+    # - 192.168.1.111
+    # - 192.168.1.110
+    # - 192.168.1.100
+
+    
+
+  
+
+
+
+ 

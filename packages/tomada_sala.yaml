@@ -1,0 +1,73 @@
+switch:
+
+  - platform: mqtt
+    name: "sonoffpow01"
+    state_topic: "stat/sonoffpow01/POWER"
+    command_topic: "cmnd/sonoffpow01/power"
+    availability_topic: "tele/sonoffpow01/LWT"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    #retain: true    
+
+
+sensor:
+#watts
+  - platform: mqtt
+    name: "sonoff Wats"
+    state_topic: "tele/sonoffpow01/SENSOR"
+    value_template: '{{ value_json["ENERGY"]["Power"] }}'
+    unit_of_measurement: "W"
+#Amperes #
+  - platform: mqtt
+    name: "sonoff Amperes"
+    state_topic: "tele/sonoffpow01/SENSOR"
+    value_template: '{{ value_json["ENERGY"]["Current"] }}'
+    unit_of_measurement: "A"
+#Voltagem
+  - platform: mqtt
+    name: "sonoff Voltagem"
+    state_topic: "tele/sonoffpow01/SENSOR"
+    value_template: '{{ value_json["ENERGY"]["Voltage"] }}'
+    unit_of_measurement: "V"
+#Hoje kWh 
+  - platform: mqtt
+    name: "sonoff Hoje"
+    state_topic: "tele/sonoffpow01/SENSOR"
+    value_template: '{{ value_json["ENERGY"]["Today"] }}'
+    unit_of_measurement: "kWh"
+#Hoje € 
+  - platform: mqtt
+    name: "sonoff Hoje (€)"
+    state_topic: "tele/sonoffpow01/SENSOR"
+    value_template: >-
+      {{states.sensor.sonoff_hoje.state | multiply(0.1582) | round(2)}}
+    unit_of_measurement: "€"
+#Ontem kWh
+  - platform: mqtt
+    name: "sonoff Ontem"
+    state_topic: "tele/sonoffpow01/SENSOR"
+    value_template: '{{ value_json["ENERGY"]["Yesterday"] }}'
+    unit_of_measurement: "kWh"  
+#Ontem €
+  - platform: mqtt
+    name: "sonoff Ontem (€)"
+    state_topic: "tele/sonoffpow01/SENSOR"
+    value_template: >-
+      {{states.sensor.sonoff_ontem.state | multiply(0.1582) | round(2)}}
+    unit_of_measurement: "€"
+#Total kWh 
+  - platform: mqtt
+    name: "sonoff Total"
+    state_topic: "tele/sonoffpow01/SENSOR"
+    value_template: '{{ value_json["ENERGY"]["Total"] }}'
+    unit_of_measurement: "kWh"
+#Total €
+  - platform: mqtt
+    name: "sonoff Total (€)"
+    state_topic: "tele/sonoffpow01/SENSOR"
+    value_template: >-
+      {{states.sensor.sonoff_total.state | multiply(0.1582) | round(2)}}
+    unit_of_measurement: "€"

@@ -1,0 +1,77 @@
+homeassistant:
+
+
+
+###############################################################################
+#                                                                             #
+#                               C I L I N D R O                               #
+#                                                                             #
+###############################################################################
+
+automation:
+#Liga Cilindro às 06H
+  - alias: Liga Cilindro às 06h
+    trigger:
+      platform: time
+      at: '06:00:00'
+    action:
+      service: switch.turn_on
+      entity_id: switch.plug_158d00010dde01 
+
+#Desliga Cilindro às 10h      
+  - alias: Desliga Cilindro às 10h
+    trigger:
+      platform: time
+      at: '09:00:00'
+    action:
+      service: switch.turn_off
+      entity_id: switch.plug_158d00010dde01 
+    
+#Liga Cilindro às 17h      
+  - alias: Liga Cilindro às 17h
+    trigger:
+      platform: time
+      at: '17:00:00'
+    action:
+      service: switch.turn_on
+      entity_id: switch.plug_158d00010dde01 
+      
+#Desliga Cilindro às 21h30m
+  - alias: Desliga Cilindro às 21h30m
+    trigger:
+      platform: time
+      at: '21:30:00'
+    action:
+      service: switch.turn_off
+      entity_id: switch.plug_158d00010dde01 
+
+      
+###############################################################################
+#                                                                             #
+#                       N O T I F I C A C O E S                               #
+#                                                                             #
+###############################################################################
+
+#Notifica se o Cilindro Ligou      
+  - alias: Notifica Estado Cilindro
+    trigger:
+    - entity_id: switch.plug_158d00010dde01
+      from: 'off'
+      platform: state
+      to: 'on'
+    action:
+      - service: notify.poliveira_bot
+        data:
+          message: 'Cilindro Ligado' 
+        
+#Notifica se o Cilindro Desligou      
+  - alias: Notifica Estado Cilindro
+    trigger:
+    - entity_id: switch.plug_158d00010dde01
+      from: 'on'
+      platform: state
+      to: 'off'
+    action:
+      - service: notify.poliveira_bot
+        data:
+          message: 'Cilindro Desligado'

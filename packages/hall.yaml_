@@ -1,0 +1,316 @@
+###############################################################################
+#                                                                             #
+#                           G R O U P                                         #
+#                                                                             #
+###############################################################################
+group:
+  my_hall:
+    name: Corredor
+    entities:
+      - binary_sensor.door_window_sensor_158d0001a65d1a
+      # - binary_sensor.switch_158d0001f35ce4
+      - light.lampada_wc
+      - light.lampada_entrada
+      - light.gateway_light_f0b429cc1d83
+      - sensor.illumination_f0b429cc1d83
+      - switch.plug_158d00010dde01
+      - switch.plug_158d0001dad4ed
+
+# sensors:
+  # - platform: uptime
+    # name: "HA runtime in minutes"
+      
+###############################################################################
+#                                                                             #
+#                           A U T O M A T I O N                               #
+#                                                                             #
+###############################################################################
+
+automation:
+
+- alias: BotaoHALL Liga a luz do corredor ENT
+  trigger:
+    platform: event
+    event_type: click
+    event_data:
+      entity_id: binary_sensor.switch_158d0001f35ce4
+      click_type: single
+  action:
+    service: light.toggle
+    entity_id: light.lampada_entrada
+    
+############################################################    
+- alias: BotaoHALL Liga a luz do corredor WC
+  trigger:
+    platform: event
+    event_type: click
+    event_data:
+      entity_id: binary_sensor.switch_158d0001f35ce4
+      click_type: single
+  action:
+    service: light.toggle
+    entity_id: light.lampada_wc
+    
+#Botão Entrada Liga a Luz da Entrada com 2 cliques
+- alias: BotãoHall Liga a luz do corredor ENT_2
+  trigger:
+    platform: event
+    event_type: click
+    event_data:
+      entity_id: binary_sensor.switch_158d0001f35ce4
+      click_type: double
+  action:
+    - service: light.toggle
+      entity_id: light.lampada_entrada
+
+    
+    
+#Automação para desligar a luz do WC durante a madrugada quando ele está ligado por mais que 10 min.
+- alias: Desligar Luz WC
+  trigger:
+    - entity_id: light.lampada_wc
+      platform: state
+      to: 'on'
+      for:
+        minutes: 10
+  condition:
+  - condition: time
+    after: '21:00'
+    before: '08:00'
+  action:
+    - service: light.turn_off
+      data:
+        entity_id: light.lampada_wc
+     
+     
+#Dentro de um periodo se ligar a luz do corredor fica com 10 Luminosidade
+- alias: Luminosidade Luz WC 3
+  trigger:
+  - entity_id: light.lampada_wc
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition:
+  - after: '21:00:00'
+    before: '07:00:00'
+    condition: time
+  action:
+  - data:
+      brightness: 3
+      entity_id: light.lampada_wc
+    service: light.turn_on
+    
+    
+#Dentro de um periodo ao entrar em casa liga a luz
+- alias: Luminosidade Luz WC 30
+  trigger:
+  - entity_id: binary_sensor.door_window_sensor_158d0001a65d1a
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition:
+  - after: '18:00:00'
+    before: '07:00:00'
+    condition: time
+  action:
+  - data:
+      brightness: 30
+      entity_id: light.lampada_entrada
+    service: light.turn_on
+    
+#Automação para desligar a luz da ENT 
+- alias: Desligar Luz Entrada após entrar em casa
+  trigger:
+  - entity_id: light.lampada_entrada
+    from: 'off'
+    platform: state
+    to: 'on'
+    for:
+      minutes: 1
+  condition:
+  - condition: time
+    after: '18:00'
+    before: '07:00'
+  action:
+    - service: light.turn_off
+      data:
+        entity_id: light.lampada_entrada
+        
+###################  C I L I N D R O  ###################
+
+#Liga Cilindro às 06H
+- alias: Liga Cilindro às 06h
+  trigger:
+    platform: time
+    at: '06:00:00'
+  action:
+    service: switch.turn_on
+    data:
+      entity_id: switch.plug_158d00010dde01 
+
+#Desliga Cilindro às 10h      
+- alias: Desliga Cilindro às 10h
+  trigger:
+    platform: time
+    at: '10:00:00'
+  action:
+    service: switch.turn_off
+    data:
+      entity_id: switch.plug_158d00010dde01 
+#Liga Cilindro às 17h      
+- alias: Liga Cilindro às 17h
+  trigger:
+    platform: time
+    at: '17:00:00'
+  action:
+    service: switch.turn_on
+    data:
+      entity_id: switch.plug_158d00010dde01 
+      
+#Desliga Cilindro às 21h30m
+- alias: Desliga Cilindro às 21h30m
+  trigger:
+    platform: time
+    at: '21:30:00'
+  action:
+    service: switch.turn_off
+    data:
+      entity_id: switch.plug_158d00010dde01 
+
+################### DESUMIDIFICADOR  ###################
+
+#Liga Desumidificador se a Humidade acima de 70
+- alias: Liga Desumidificador Humidade acima 70
+  initial_state: true
+  trigger:
+    platform: template
+    value_template: >
+      {% if states.sensor.humidity_158d00011739b9.state >= "70.1" %}
+       true
+      {% else %}
+       false
+      {% endif %}
+  action:
+    service: switch.turn_on
+    data:
+       entity_id: switch.plug_158d0001dad4ed
+      
+# #Liga Desumidificador se a Humidade acima de 70
+  # - alias: Liga Desumidificador Humidade acima 70
+    # initial_state: true
+    # trigger:
+      # platform: template
+      # value_template: >
+        # {% if states.sensor.humidity_158d00011739b9.state => "70" %}
+         # true
+        # {% else %}
+         # false
+        # {% endif %}
+    # condition:
+    # - condition: numeric_state
+      # entity_id: sensor.ha_runtime_in_minutes
+      # above: 2   
+    # - condition: time
+      # after: '18:00'
+      # before: '07:00'
+    # action:
+      # service: switch.turn_on
+      # entity_id: switch.plug_158d0001dad4ed
+      
+#Desliga Desumidificador abaixo dos 70% de Humidade
+- alias: Desliga Desumidificador Humidade baixa
+  initial_state: true
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.humidity_158d00011739b9
+    below: 70
+  action:
+    service: switch.turn_off
+    entity_id: switch.plug_158d0001dad4ed 
+        
+#Desliga Desumidificador
+- alias: shutdown Desumidificador_7
+  initial_state: true
+  trigger:
+    platform: time
+    at: '12:01:00'
+  action:
+    service: switch.turn_off
+    entity_id: switch.plug_158d0001dad4ed 
+      
+
+###############################################################################
+#                                                                             #
+#                       N O T I F I C A C O E S                               #
+#                                                                             #
+###############################################################################
+
+- alias: Notifica Porta Entrada
+  trigger:
+  - entity_id: binary_sensor.door_window_sensor_158d0001a65d1a
+    from: 'off'
+    platform: state
+    to: 'on'
+  action:
+    - service: notify.poliveira_bot
+      data:
+        message: 'Porta Entrada Aberta'   
+
+- alias: Notifica Porta Fechada
+  trigger:
+  - entity_id: binary_sensor.door_window_sensor_158d0001a65d1a
+    from: 'on'
+    platform: state
+    to: 'off'
+  action:
+    - service: notify.poliveira_bot
+      data:
+        message: 'Porta Entrada Fechada' 
+      
+#Notifica se o Cilindro Ligou      
+- alias: Notifica Estado Cilindro
+  trigger:
+  - entity_id: switch.plug_158d00010dde01
+    from: 'off'
+    platform: state
+    to: 'on'
+  action:
+    - service: notify.poliveira_bot
+      data:
+        message: 'Cilindro Ligado' 
+        
+#Notifica se o Cilindro Desligou      
+- alias: Notifica Estado Cilindro
+  trigger:
+  - entity_id: switch.plug_158d00010dde01
+    from: 'on'
+    platform: state
+    to: 'off'
+  action:
+    - service: notify.poliveira_bot
+      data:
+        message: 'Cilindro Desligado'
+        
+ #Notifica se o Desumidificador Ligou      
+- alias: Notifica Estado_L Desumidificador
+  trigger:
+  - entity_id: switch.plug_158d0001dad4ed
+    from: 'off'
+    platform: state
+    to: 'on'
+  action:
+    - service: notify.poliveira_bot
+      data:
+        message: 'Desumidificador Ligado'
+        
+#Notifica se o Desumidificador Desligou      
+- alias: Notifica Estado Desumidificador
+  trigger:
+  - entity_id: switch.plug_158d0001dad4ed
+    from: 'on'
+    platform: state
+    to: 'off'
+  action:
+    - service: notify.poliveira_bot
+      data:
+        message: 'Desumidificador Desligado'

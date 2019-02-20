@@ -1,0 +1,57 @@
+homeassistant:
+
+
+group:
+  my_escritorio:
+    name: Luz Escritorio
+    entities:
+      - switch.sonoff01
+
+# mqtt:
+
+  # broker: 192.168.0.146
+  # port: 1883
+  # username: !secret username_mqtt
+  # password: !secret password_mqtt
+  # keepalive: 60
+  
+  
+switch:
+
+  - platform: mqtt
+    name: "sonoff01"
+    state_topic: "stat/sonoff01/POWER"
+    command_topic: "cmnd/sonoff01/power"
+    availability_topic: "tele/sonoff01/LWT"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    #retain: true
+    
+ 
+# sensor:
+  # - platform: mqtt
+    # name: "Temperatura marquise"
+    # state_topic: "tele/sonoff01/SENSOR"
+    # value_template: "{{ value_json.AM2301.Temperature }}"
+    # unit_of_measurement: "°C"
+  # - platform: mqtt
+    # name: "Humidade marquise"
+    # state_topic: "tele/sonoff01/SENSOR"
+    # value_template: "{{ value_json.AM2301.Humidity }}" 
+    # unit_of_measurement: "%"
+    
+# automation:
+# #Liga Tomada Quarto
+# - alias: Botao tomada quarto
+  # trigger:
+  # - event_data:
+      # click_type: double
+      # entity_id: binary_sensor.switch_158d000123ddcb
+    # event_type: click
+    # platform: event
+  # action:
+  # - entity_id: switch.sonoff01
+    # service: switch.toggle

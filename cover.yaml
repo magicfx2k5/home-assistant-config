@@ -1,0 +1,18 @@
+- platform: template
+  covers:
+    persiana_quarto_crianca:
+      friendly_name: "Persiana Quarto Crianca"
+      open_cover:
+        service: script.persiana_quartocrianca_abrir
+      close_cover:
+        service: script.persiana_quartocrianca_fechar
+      stop_cover:
+        service: script.persiana_quartocrianca_parar
+    persiana_sala:
+      friendly_name: "Persiana Sala"
+      open_cover:
+        service: script.persiana_sala_abrir
+      close_cover:
+        service: script.persiana_sala_fechar
+      stop_cover:
+        service: script.persiana_sala_parar

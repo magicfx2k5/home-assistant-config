@@ -94,8 +94,8 @@ sensor:
       friendly_name: Bateria sensor temp. Quarto Principal
       unit_of_measurement: '%'
       value_template: >-
-        {%- if states.sensor.temperature_158d00011739b9.attributes.battery_level %}
-          {{ states.sensor.temperature_158d00011739b9.attributes.battery_level|round }}
+        {%- if states.sensor.temperature_158d0001585314.attributes.battery_level %}
+          {{ states.sensor.temperature_158d0001585314.attributes.battery_level|round }}
         {% else %}
           {{ states.sensor.temperature_sensor.state }}
         {%- endif %}
@@ -114,8 +114,8 @@ sensor:
       friendly_name: Bateria sensor temp. Quarto Criancas
       unit_of_measurement: '%'
       value_template: >-
-        {%- if states.sensor.temperature_158d0001585314.attributes.battery_level %}
-          {{ states.sensor.temperature_158d0001585314.attributes.battery_level|round }}
+        {%- if states.sensor.temperature_158d00011739b9.attributes.battery_level %}
+          {{ states.sensor.temperature_158d00011739b9.attributes.battery_level|round }}
         {% else %}
           {{ states.sensor.temperature_sensor_1.state }}
         {%- endif %}
@@ -211,9 +211,9 @@ automation:
         - sensor.temperature_sensor
         - sensor.temperature_sensor_1
         - sensor.temperature_sensor_2
-        - sensor.Botao1_sensor
-        - sensor.Botao1_sensor_1
-        - sensor.Botao1_sensor_2
+        # - sensor.Botao1_sensor
+        # - sensor.Botao1_sensor_1
+        # - sensor.Botao1_sensor_2
       below: 15
     condition:
       - condition: template

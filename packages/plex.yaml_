@@ -1,0 +1,39 @@
+###############################################################################
+#                                                                             #
+#                           MEDIA PLAYER                                      #
+#                                                                             #
+###############################################################################
+
+
+media_player:
+  - platform: plex
+    ip_adress: 192.168.0.100
+    port: 32400
+    username: !secret plex_username
+    password: !secret plex_password
+    token: !secret plex_token
+    ssl: True
+    verify: true
+    entity_namespace: 'Raspi3'
+    include_non_clients: true
+    scan_interval: 5
+    show_all_controls: false
+    use_custom_entity_ids: true
+    use_episode_art: true
+    remove_unavailable_clients: true
+    client_remove_interval: 600
+
+###############################################################################
+#                                                                             #
+#                           S E N S O R                                       #
+#                                                                             #
+###############################################################################
+sensor:
+  - platform: plex
+    #name: PIPLEX
+    host: 192.168.0.100
+    port: 32400
+    username: !secret plex_username
+    password: !secret plex_password
+    #token: !secret plex_token
+    #server: PIPLEX

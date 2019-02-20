@@ -1,0 +1,34 @@
+﻿#--------------------------------------------------------------------
+#	Home Assistant - Media Player
+#--------------------------------------------------------------------
+#	Author		:	Flávio Pinho
+#	Date		:	2018-01-22
+#	Description :	Set configuration to Media Player
+#--------------------------------------------------------------------
+
+homeassistant:
+  customize:
+    media_player.wetek:
+      friendly_name: Wetek Play Quarto
+
+media_player:
+  - platform: enigma
+    host: 192.168.0.10
+    port: 80
+    # username: !secret enigma_username
+    # password: !secret enigma_password
+
+  # - platform: plex
+    # entity_namespace: 'plex'
+    # include_non_clients: true
+    # scan_interval: 5
+    # show_all_controls: false
+    # use_custom_entity_ids: true
+    # use_episode_art: true
+
+group:
+  Media Player:
+    name: Wetek Play
+    entities:
+      - media_player.wetek
+      # - media_player.plex
